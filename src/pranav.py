@@ -4,11 +4,7 @@ import platform
 def verify_environment():
     print("\n--- Project_ Local Environment Verification ---")
     print("Developer: Pranav (Local Node)")
-    
-    # This must output 3.12, verifying the Docker image is correct
     print(f"Python Version: {sys.version.split()[0]}")
-    
-    # This must output Linux, proving we are isolated from Windows
     print(f"OS Platform: {platform.system()} {platform.release()}")
     print("Status: Container Parity Achieved.\n")
 
