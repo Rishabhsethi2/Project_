@@ -10,7 +10,6 @@ def test_environment():
         print("Dhan API Secret: [CONFIGURED]")
     else:
         print("Dhan API Secret: [MISSING]")
-        
     print("Status: System Ready for Phase 1 (May 8th)")
     print("---------------------------------------------")
 
