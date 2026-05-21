@@ -1,5 +1,8 @@
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def test_environment():
     print("--- RISHABH: CLOUD ENVIRONMENT VERIFICATION ---")
