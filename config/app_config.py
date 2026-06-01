@@ -1,3 +1,6 @@
+import yaml, os
+from exceptions import TradingPlatformException
+
 class AppConfig():
     _instance = None
 
@@ -11,5 +14,24 @@ class AppConfig():
         return cls._instance
     
     def __init__(cls):
-        pass
-        
+
+        try:
+            with open('settings.yaml','r') as f:
+                data = yaml.safe_load(f)
+                if data is None:
+                    raise TradingPlatformException("No data in YAML file!!")
+            for key,value in data.items():
+                setattr(AppConfig, key, value)
+        except TradingPlatformException as e:
+            print(e)
+        except yaml.YAMLError as e:
+            print(f"YAML syntax error occured: {e}")
+        except Exception as e:
+            print(f"Unexpected error occured: {e}")
+
+eg = AppConfig()
+
+print(AppConfig.MARKET_CLOSE_TIME)
+print(AppConfig.MARKET_OPEN_TIME)
+print(AppConfig.trading)
+print(AppConfig.network)
