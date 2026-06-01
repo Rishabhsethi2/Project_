@@ -1,0 +1,5 @@
+network:
+ max_retries: 3
+ timeout_seconds: 5
+trading:
+  default_volume: 1

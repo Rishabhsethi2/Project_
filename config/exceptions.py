@@ -21,7 +21,8 @@ def handle_system_error(func):
             print("[ERROR] Network timeout detected. Initiating circuit breaker protocols...")
     return wrapper
 
-@handle_system_error
-def risky_op():
-    raise NetworkTimeoutException()
-risky_op()
+#tests
+# @handle_system_error
+# def risky_op():
+#     raise NetworkTimeoutException()
+# risky_op()
