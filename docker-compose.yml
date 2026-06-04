@@ -1,10 +1,39 @@
 services:
-  quant-backend:
-    build: .
-    image: quant-backend:local
-    container_name: local-quant-node
-    restart: unless-stopped
-    volumes:
-      - .:/app
+  # 1. The PostgreSQL Database Service
+  db:
+    image: postgres:16-alpine
+    container_name: quant-postgres
+    restart: always
     environment:
-      - ENVIRONMENT=local
+      POSTGRES_USER: quant_admin
+      POSTGRES_PASSWORD: quant_password_123
+      POSTGRES_DB: market_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quant_admin -d market_data"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. The Python Execution Engine
+  quant-backend:
+    image: quant-backend:local   # CRITICAL FIX: Explicit, purely lowercase image name
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./.env:/app/.env
+    environment:
+      - DATABASE_URL=postgresql://quant_admin:quant_password_123@db:5432/market_data
+
+# Define the local persistent storage block
+volumes:
+  pgdata:
+    driver: local
