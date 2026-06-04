@@ -1,3 +1,5 @@
+from heartbeat import start_heartbeat
+import time 
 import yfinance as yf
 import pandas as pd
 import requests
@@ -32,6 +34,8 @@ def fallback_csv_dump(validated_ticks):
 
 def fetch_and_validate_data():
     logger.info("Initiating Quant Data Pipeline...")
+    # Start the heartbeat (Set to 5 seconds temporarily so we can see it in action)
+    start_heartbeat()
     symbol = "RELIANCE.NS"
     
     try:
@@ -81,6 +85,6 @@ def fetch_and_validate_data():
             
     except Exception as e:
         logger.critical(f"Pipeline Failed: {e}", exc_info=True)
-
+    
 if __name__ == "__main__":
     fetch_and_validate_data()

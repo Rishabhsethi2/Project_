@@ -3,5 +3,7 @@ python-dotenv==1.0.0
 pandas==2.2.2
 yfinance
 pydantic==2.7.1
-SQLALchemy==2.0.30
+SQLAlchemy==2.0.30
 psycopg2-binary==2.9.9
+
+psutil==5.9.8
