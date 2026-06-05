@@ -25,7 +25,13 @@ def validate_and_quarantine(raw_json_data):
             # Step 1: Structural Defense (Pydantic)
             validated_tick = MarketTick(**mapped_tick)
             
-            # Step 2: Mathematical Defense (The Circuit Breaker)
+            # Step 2: The Volume Filter (Drop useless heartbeat ticks)
+            if getattr(validated_tick, 'volume', None) == 0:
+                # We simply 'continue' to skip to the next tick. 
+                # We do not log an error because this is expected market behavior.
+                continue 
+            
+           # Step 2: Mathematical Defense (The Circuit Breaker)
             if last_valid_close is not None:
                 # Calculate absolute percentage change
                 price_change_pct = abs((validated_tick.close_price - last_valid_close) / last_valid_close)

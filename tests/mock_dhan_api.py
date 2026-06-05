@@ -64,6 +64,15 @@ class MockDhanBroker(BaseHTTPRequestHandler):
                         "low": 1600.00,
                         "close": 1633.50, # Massive jump from ~1485!
                         "volume": 300000
+                    },
+                    {
+                        "symbol": "RELIANCE.NS",
+                        "date": "2026-06-01",
+                        "open": 1633.50,
+                        "high": 1633.50,
+                        "low": 1633.50,
+                        "close": 1633.50,
+                        "volume": 0
                     }
                 ]
             }
