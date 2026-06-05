@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from datetime import date
+from datetime import datetime
 from typing import Optional
 
 class MarketTick(BaseModel):
@@ -8,7 +8,7 @@ class MarketTick(BaseModel):
     If the data does not mathematically match this schema, it is rejected before hitting Postgres.
     """
     symbol: str = Field(..., description="The ticker symbol (e.g., RELIANCE.NS)")
-    trade_date: date = Field(..., description="The date of the market data")
+    trade_date: datetime = Field(..., description="The date of the market data")
     open_price: float = Field(..., ge=0, description="Opening price")
     high_price: float = Field(..., ge=0, description="Highest price of the day")
     low_price: float = Field(..., ge=0, description="Lowest price of the day")

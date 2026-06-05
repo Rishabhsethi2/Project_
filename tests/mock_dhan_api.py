@@ -30,7 +30,7 @@ class MockDhanBroker(BaseHTTPRequestHandler):
                 "data": [
                     {
                         "symbol": "RELIANCE.NS",
-                        "date": "2026-06-05",
+                        "date": 1717571625000,  # Epoch timestamp in milliseconds
                         "open": 1500.50,
                         "high": 1515.00,
                         "low": 1495.25,
@@ -39,7 +39,7 @@ class MockDhanBroker(BaseHTTPRequestHandler):
                     },
                     {
                         "symbol": "RELIANCE.NS",
-                        "date": "2026-06-04",
+                        "date": 1717485225000,  # Epoch timestamp in milliseconds
                         "open": 1490.00,
                         "high": 1505.50,
                         "low": 1485.00,

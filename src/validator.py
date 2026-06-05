@@ -1,3 +1,4 @@
+from utils import epoch_ms_to_ist
 import json
 from pydantic import ValidationError
 from logger import logger
@@ -14,14 +15,14 @@ def validate_and_quarantine(raw_json_data):
         try:
             mapped_tick = {
                 "symbol": raw_tick.get("symbol"),
-                "trade_date": raw_tick.get("date"),
+                # Intercept the raw epoch and convert it to IST instantly
+                "trade_date": epoch_ms_to_ist(raw_tick.get("date")) if isinstance(raw_tick.get("date"), int) else raw_tick.get("date"),
                 "open_price": raw_tick.get("open"),
                 "high_price": raw_tick.get("high"),
                 "low_price": raw_tick.get("low"),
                 "close_price": raw_tick.get("close"),
                 "volume": raw_tick.get("volume")
             }
-            
             # Step 1: Structural Defense (Pydantic)
             validated_tick = MarketTick(**mapped_tick)
             
