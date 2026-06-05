@@ -23,6 +23,7 @@ class MockDhanBroker(BaseHTTPRequestHandler):
             self.end_headers()
             
             # The Exact JSON structure the Dhan API returns
+            # The Exact JSON structure the Dhan API returns (Plus one corrupted tick!)
             mock_payload = {
                 "status": "success",
                 "remarks": "Mock data generated locally",
@@ -44,6 +45,16 @@ class MockDhanBroker(BaseHTTPRequestHandler):
                         "low": 1485.00,
                         "close": 1500.50,
                         "volume": 198000
+                    },
+                    # 🚨 THE MALFORMED TICK 🚨
+                    {
+                        "symbol": "RELIANCE.NS",
+                        "date": "2026-06-03",
+                        "open": 1480.00,
+                        "high": "ERROR",  # Wrong data type! Should be float.
+                        "low": 1475.00,
+                        "close": 1485.00
+                        # Missing 'volume' key entirely!
                     }
                 ]
             }
@@ -57,7 +68,7 @@ class MockDhanBroker(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode('utf-8'))
 
 def run_mock_server():
-    port = 8080
+    port = 8085
     server_address = ('', port)
     httpd = HTTPServer(server_address, MockDhanBroker)
     print(f"\n🟢 Mock Dhan API Online.")
