@@ -5,9 +5,9 @@ services:
     container_name: quant-postgres
     restart: always
     environment:
-      POSTGRES_USER: quant_admin
-      POSTGRES_PASSWORD: quant_password_123
-      POSTGRES_DB: market_data
+      - POSTGRES_USER=quant_user
+      - POSTGRES_PASSWORD=quant_password
+      - POSTGRES_DB=quant_db
     ports:
       - "5432:5432"
     volumes:
@@ -30,6 +30,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./.env:/app/.env
+      - ./tests:/app/tests
     environment:
       - DATABASE_URL=postgresql://quant_admin:quant_password_123@db:5432/market_data
 
