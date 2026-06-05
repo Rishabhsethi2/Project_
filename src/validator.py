@@ -4,17 +4,14 @@ from logger import logger
 from models import MarketTick
 
 def validate_and_quarantine(raw_json_data):
-    """
-    Parses a list of raw API dictionaries. 
-    Returns a list of validated MarketTick objects and logs any malformed data.
-    """
     clean_ticks = []
     quarantined_ticks = []
+    
+    # State Tracker: Remembers the last known good price
+    last_valid_close = None 
 
     for index, raw_tick in enumerate(raw_json_data):
         try:
-            # Attempt to map the Dhan API keys to our internal Data Contract
-            # (Adjust these dictionary keys if your MarketTick model expects different names)
             mapped_tick = {
                 "symbol": raw_tick.get("symbol"),
                 "trade_date": raw_tick.get("date"),
@@ -25,25 +22,35 @@ def validate_and_quarantine(raw_json_data):
                 "volume": raw_tick.get("volume")
             }
             
-            # Pydantic validates the types mathematically here
+            # Step 1: Structural Defense (Pydantic)
             validated_tick = MarketTick(**mapped_tick)
+            
+            # Step 2: Mathematical Defense (The Circuit Breaker)
+            if last_valid_close is not None:
+                # Calculate absolute percentage change
+                price_change_pct = abs((validated_tick.close_price - last_valid_close) / last_valid_close)
+                
+                if price_change_pct > 0.05: # The 5% Threshold
+                    logger.critical(f"⚡ CIRCUIT BREAKER TRIPPED | Tick Index [{index}] | {price_change_pct:.2%} price spike detected. Quarantining False Trade.")
+                    quarantined_ticks.append(raw_tick)
+                    continue # Skip to the next tick, do not update last_valid_close!
+
+            # If it passes both defenses, lock it in
             clean_ticks.append(validated_tick)
             
+            # Update the state tracker for the next loop
+            last_valid_close = validated_tick.close_price
+            
         except ValidationError as e:
-            # If Pydantic catches a bad type or missing field, it throws a ValidationError
             error_details = e.errors()[0]
             field = error_details.get('loc', ['Unknown'])[0]
             msg = error_details.get('msg', 'Unknown error')
-            
             logger.warning(f"🛡️ MALFORMED DATA CAUGHT | Tick Index [{index}] | Field: '{field}' -> {msg}")
             quarantined_ticks.append(raw_tick)
             
         except Exception as e:
-            # Catch-all for extreme structural corruption
             logger.warning(f"🛡️ SEVERE DATA CORRUPTION | Tick Index [{index}] | Error: {e}")
             quarantined_ticks.append(raw_tick)
 
-    # Log the final batch summary
     logger.info(f"Validation Complete: {len(clean_ticks)} Clean | {len(quarantined_ticks)} Quarantined.")
-    
     return clean_ticks

@@ -55,6 +55,15 @@ class MockDhanBroker(BaseHTTPRequestHandler):
                         "low": 1475.00,
                         "close": 1485.00
                         # Missing 'volume' key entirely!
+                    },
+                    {
+                        "symbol": "RELIANCE.NS",
+                        "date": "2026-06-02",
+                        "open": 1600.00,
+                        "high": 1650.00,
+                        "low": 1600.00,
+                        "close": 1633.50, # Massive jump from ~1485!
+                        "volume": 300000
                     }
                 ]
             }
