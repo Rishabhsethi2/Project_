@@ -21,6 +21,6 @@ def decrypt_access_token() -> str:
     return decrypted_data
 
 if __name__=="__main__":
-    # encrypt_access_token("Rishabh")
+    encrypt_access_token("Rishabh")
     token = decrypt_access_token()
     print(token)
