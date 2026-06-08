@@ -3,16 +3,16 @@ import requests
 import os
 from dotenv import load_dotenv
 
-
-
 def establish_live_session():
+    load_dotenv()
     b_URL = "https://auth.dhan.co"
     endpoint = "/app/generateAccessToken"
     url = b_URL + endpoint
     load = {'dhanClientId': os.getenv("DHAN_CLIENT_ID") ,'pin': os.getenv("DHAN_PIN") ,'totp': generate_totp(os.getenv("DHAN_SECRET_KEY")) }
-    print(load)
+    # print(load)
     response = requests.post(url,data = load)
     print(response.json())
+    return response.json()
 
 def generate_totp(secret_key: str) -> str:
     totp = pyotp.TOTP(secret_key)
