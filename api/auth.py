@@ -2,7 +2,7 @@ import pyotp
 import requests
 import os
 from dotenv import load_dotenv
-from api.security import encrypt_access_token
+from cryptography.fernet import Fernet
 
 def establish_live_session():
     load_dotenv()
@@ -11,10 +11,19 @@ def establish_live_session():
     url = b_URL + endpoint
     load = {'dhanClientId': os.getenv("DHAN_CLIENT_ID") ,'pin': os.getenv("DHAN_PIN") ,'totp': generate_totp(os.getenv("DHAN_SECRET_KEY")) }
     # print(load)
+    print("Sending new api request..")
     response = requests.post(url,data = load)
     # print(response.json())
     # return response.json()
-    encrypt_access_token(response.json().get("accessToken"))
+
+    #Encrypting the token key and saving in cache
+    fetched_data = response.json()
+    key = Fernet(os.getenv("ENCRYPTION_KEY"))
+    encrypted_data = key.encrypt(fetched_data.get("accessToken").encode())
+    file_path = os.path.join(os.getenv("ROOT_FOLDER_PROJECT_"),".cache","dhan_token.enc")
+    with open(file_path,"wb") as f:
+        f.write(encrypted_data)
+    print("Data written successfully")
 
 def generate_totp(secret_key: str) -> str:
     totp = pyotp.TOTP(secret_key)
@@ -22,8 +31,9 @@ def generate_totp(secret_key: str) -> str:
 
 #test
 if __name__=="__main__":
-    load_dotenv()
-    sk = os.getenv("DHAN_SECRET_KEY")
-    a = generate_totp(sk)
-    print(a)
-    establish_live_session()
+    # load_dotenv()
+    # sk = os.getenv("DHAN_SECRET_KEY")
+    # a = generate_totp(sk)
+    # print(a)
+    # establish_live_session()
+    pass
