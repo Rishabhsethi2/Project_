@@ -12,7 +12,7 @@ def get_fund_summary(token: str):
         'access-token': token
     }
     response = requests.get(URL,headers = headers)
-    # print(headers)
+    # # print(headers)
     print(response.json())
     print(response.status_code)
 

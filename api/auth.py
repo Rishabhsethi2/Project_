@@ -3,15 +3,17 @@ import requests
 import os
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
+import time
 
 def establish_live_session():
+    # print("Inside establish_live_session")
     load_dotenv()
     b_URL = "https://auth.dhan.co"
     endpoint = "/app/generateAccessToken"
     url = b_URL + endpoint
     load = {'dhanClientId': os.getenv("DHAN_CLIENT_ID") ,'pin': os.getenv("DHAN_PIN") ,'totp': generate_totp(os.getenv("DHAN_SECRET_KEY")) }
     # print(load)
-    print("Sending new api request..")
+    # print("Sending new api request..")
     response = requests.post(url,data = load)
     # print(response.json())
     # return response.json()
@@ -23,7 +25,8 @@ def establish_live_session():
     file_path = os.path.join(os.getenv("ROOT_FOLDER_PROJECT_"),".cache","dhan_token.enc")
     with open(file_path,"wb") as f:
         f.write(encrypted_data)
-    print("Data written successfully")
+    print(f"Data written successfully at {time.time()}")
+
 
 def generate_totp(secret_key: str) -> str:
     totp = pyotp.TOTP(secret_key)
@@ -35,5 +38,4 @@ if __name__=="__main__":
     # sk = os.getenv("DHAN_SECRET_KEY")
     # a = generate_totp(sk)
     # print(a)
-    # establish_live_session()
-    pass
+    establish_live_session()

@@ -26,9 +26,9 @@ def decrypt_access_token() -> str:
         decrypted_data = key.decrypt(enc_data).decode()
         return decrypted_data
     else:
-        print("token expired...regenerating token..")
+        # print("token expired...regenerating token..")
         establish_live_session()
-        print("regeneration successful")
+        # print("regeneration successful")
         with open(file_path,"rb") as f:
             enc_data = f.read()
         key = Fernet(os.getenv("ENCRYPTION_KEY"))
