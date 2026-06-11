@@ -1,0 +1,8 @@
+#STEPS TO FOLLOW:
+
+A. FOR API ACCESS KEY 
+1. from api.security import *
+2. use the function : decrypt_access_token() >> returns the api key.
+3. to run the file go to root folder and run python -m <<directory.file>>. 
+   (this will run the file as a module)
+
