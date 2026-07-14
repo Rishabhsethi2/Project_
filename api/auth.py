@@ -21,7 +21,9 @@ def establish_live_session():
     #Encrypting the token key and saving in cache
     fetched_data = response.json()
     key = Fernet(os.getenv("ENCRYPTION_KEY"))
-    encrypted_data = key.encrypt(fetched_data.get("accessToken").encode())
+    tempat = fetched_data.get("accessToken")
+    data = tempat.encode()
+    encrypted_data = key.encrypt(data)
     file_path = os.path.join(os.getenv("ROOT_FOLDER_PROJECT_"),".cache","dhan_token.enc")
     with open(file_path,"wb") as f:
         f.write(encrypted_data)
